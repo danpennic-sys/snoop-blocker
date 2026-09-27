@@ -1,0 +1,19 @@
+{
+  "check_interval": 1.5,
+  "disrupt_mode": "freeze",
+  "max_new_procs_per_cycle": 12,
+  "max_new_sockets_per_cycle": 20,
+  "max_outbound_per_pid": 8,
+  "suspicious_cmds": [
+    "nmap", "masscan", "zmap", "hydra", "medusa",
+    "sqlmap", "nikto", "dirb", "gobuster", "ffuf",
+    "tcpdump", "wireshark", "tshark", "strace",
+    "ltrace", "gdb", "radare2", "r2", "objdump"
+  ],
+  "suspicious_ports": [22, 23, 445, 3389, 5900, 6379, 27017],
+  "priv_binaries": [
+    "/usr/bin/sudo", "/bin/su", "/usr/bin/passwd", "/bin/mount",
+    "/usr/bin/chsh", "/usr/sbin/useradd", "/usr/sbin/usermod",
+    "/usr/sbin/userdel"
+  ]
+}

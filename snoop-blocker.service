@@ -1,0 +1,23 @@
+[Unit]
+Description=Snoop-Blocker Clone (offline entryway agent)
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/snoop-blocker/clone.py
+WorkingDirectory=/opt/snoop-blocker
+Restart=always
+RestartSec=3
+Nice=-5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/tmp /opt/snoop-blocker
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=snoop-blocker
+
+[Install]
+WantedBy=multi-user.target
