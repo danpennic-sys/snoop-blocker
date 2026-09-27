@@ -1,0 +1,46 @@
+# Stage 1 — Static verification (always-on)
+# Protects locked baseline + experiment modules.
+# No privileged actions. No disruption. Offline-friendly checks.
+
+name: stage1-static
+
+on:
+  push:
+    branches: [main, "experiment/**"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Syntax compile
+        run: |
+          python3 -m py_compile clone.py
+          if [ -f experiments/file-open/file_open_watch.py ]; then
+            python3 -m py_compile experiments/file-open/file_open_watch.py
+          fi
+
+      - name: Validate policy.json
+        run: |
+          python3 -c "import json; p=json.load(open('policy.json')); assert p['disrupt_mode'] in ('log','freeze','kill'); print('policy ok', p['disrupt_mode'])"
+
+      - name: Stage 1 smoke (stdlib only)
+        run: python3 ci/stage1_smoke.py
+
+      - name: Secret scan (gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: false

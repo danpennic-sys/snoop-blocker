@@ -1,0 +1,31 @@
+# Stage 2 — Packaging dry-run only
+# Isolated temp root. Never touches live /opt/snoop-blocker.
+# Separate from Stage 1. No runtime disruption.
+
+name: stage2-packaging-dryrun
+
+on:
+  push:
+    branches: [main, "experiment/**"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  packaging-dryrun:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Packaging dry-run
+        run: |
+          chmod +x ci/stage2_packaging_dryrun.sh
+          ./ci/stage2_packaging_dryrun.sh
